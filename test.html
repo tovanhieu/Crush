@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Story of me</title>
+    <script src="test.js"></script>
+
+    <style>
+      body {
+        position: relative;
+        overflow: hidden;
+        font-family: sans-serif;
+        background-color: aqua;
+      }
+
+      img {
+        max-width: 100%;
+      }
+
+      #boy,
+      #girl,
+      #heart {
+        position: absolute;
+        width: 100px;
+      }
+
+      #callout {
+        position: absolute;
+        background: #303030;
+        color: #ffffff;
+        max-width: 250px;
+        padding: 10px 15px;
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="boy">
+      <img src="Boy.png" alt="R" width="200" />
+    </div>
+
+    <div id="girl">
+      <img src="Girl.png" alt="S" width="200" />
+    </div>
+
+    <div id="heart">
+      <img src="heart.svg" alt="" width="200" />
+    </div>
+
+    <div id="callout">some text</div>
+
+    <script>
+      var dialogs = [
+          "H: Này, đây là trái tim anh!",
+          "P: Em nghĩ nó đến từ thiên đàng ?",
+          "H: Nó tuột khỏi tay anh rồi T_T",
+          "H: Em giữ nó hộ anh nhé ?",
+        ],
+        dIndex = 0;
+
+      function App() {
+        this.boy = $("#boy");
+        this.girl = $("#girl");
+        this.heart = $("#heart");
+        this.callout = $("#callout");
+        this.hideEverthing();
+        this.alignElements();
+        this.animateBoy();
+      }
+
+      App.prototype.hideEverthing = function () {
+        this.callout.hide();
+      };
+
+      App.prototype.getDim = function () {
+        var dim = {
+          left: 0,
+          top: 0,
+        };
+
+        dim.right = $(window).width();
+        dim.bottom = $(window).height();
+        return dim;
+      };
+
+      App.prototype.alignElements = function () {
+        var dims = this.getDim();
+
+        this.boy.css({
+          left: -200,
+          bottom: -dims.bottom,
+        });
+
+        this.girl.css({
+          right: -200,
+          bottom: -dims.bottom,
+          width: 90,
+        });
+
+        this.heart.css({
+          width: 50,
+          right: -70,
+          bottom: -(dims.bottom - 50),
+        });
+
+        this.callout.css({
+          top: 100,
+          left: 150,
+        });
+      };
+
+      App.prototype.animateBoy = function () {
+        var self = this;
+        window.setTimeout(function () {
+          self.boy.animate(
+            {
+              left: "200px",
+            },
+            {
+              duration: 2000,
+              complete: function () {
+                self.animateHeart();
+              },
+            }
+          );
+        }, 1000);
+      };
+
+      App.prototype.animateHeart = function () {
+        var self = this;
+        self.heart.animate(
+          {
+            right: self.getDim().right - 290,
+          },
+          {
+            duration: 8000,
+            complete: function () {
+              self.animateGirl();
+            },
+          }
+        );
+      };
+
+      App.prototype.animateGirl = function () {
+        var self = this;
+        self.girl.animate(
+          {
+            right: 200,
+          },
+          {
+            duration: 5000,
+            complete: function () {
+              self.handleCallout();
+            },
+          }
+        );
+      };
+
+      App.prototype.handleCallout = function () {
+        var self = this;
+        this.callout.text(dialogs[dIndex]);
+        this.callout.slideToggle(400);
+        dIndex += 1;
+
+        setTimeout(function () {
+          self.callout.text(dialogs[dIndex]);
+          dIndex += 1;
+          setTimeout(function () {
+            self.callout.text(dialogs[dIndex]);
+            dIndex += 1;
+            setTimeout(function () {
+              self.callout.text(dialogs[dIndex]);
+              dIndex += 1;
+              setTimeout(function () {
+                self.callout.text(dialogs[dIndex]);
+                dIndex += 1;
+                setTimeout(function () {
+                  self.ending();
+                }, 3000);
+              }, 3000);
+            }, 3000);
+          }, 3000);
+        }, 2000);
+      };
+
+      App.prototype.ending = function () {
+        var self = this;
+        this.callout.slideToggle(200);
+        this.boy.animate(
+          {
+            left: this.getDim().right / 2 - 100,
+          },
+          5000
+        );
+        this.heart.animate(
+          {
+            left: this.getDim().right / 2 - 80,
+          },
+          {
+            duration: 5000,
+            complete: function () {
+              self.heart.css({
+                "z-index": "-1",
+                left: self.getDim().right / 2 - 25,
+              });
+
+              setTimeout(function () {
+                self.heart.css("transform", "scale(8)");
+                setTimeout(function () {
+                  self.heart.css("transform", "scale(2)");
+                  setTimeout(function () {
+                    self.heart.css("transform", "scale(8)");
+                    setTimeout(function () {
+                      self.heart.css("transform", "scale(2)");
+                      setTimeout(function () {
+                        self.heart.css("transform", "scale(8)");
+                        setTimeout(function () {
+                          self.heart.css("transform", "scale(2)");
+                          setTimeout(function () {
+                            self.heart.css("transform", "scale(8)");
+                          }, 500);
+                        }, 500);
+                      }, 500);
+                    }, 500);
+                  }, 500);
+                }, 500);
+              }, 500);
+            },
+          }
+        );
+        this.girl.animate(
+          {
+            right: this.getDim().right / 2 - 100,
+          },
+          5000
+        );
+      };
+
+      new App();
+    </script>
+  </body>
+</html>
